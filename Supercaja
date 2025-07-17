@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperCaja - Sistema de Punto de Venta</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --success-color: #27ae60;
+            --light-color: #f5f6fa;
+        }
+        
+        body {
+            background-color: var(--light-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Estilos para la portada */
+        .cover-container {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), #1a252f);
+            color: silver;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cover-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path fill="rgba(255,255,255,0.03)" d="M0,0 L100,0 L100,100 L0,100 Z" /></svg>');
+            background-size: cover;
+            z-index: 0;
+        }
+        
+        .cover-logo {
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+        
+        .cover-logo i {
+            color: var(--secondary-color);
+        }
+        
+        .cover-title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 3px 10px rgba(0,0,0,0.3);
+        }
+        
+        .cover-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            max-width: 700px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover-btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: all 0.3s;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cover-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        
+        .cover-features {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .cover-feature {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            padding: 1.5rem;
+            width: 200px;
+            transition: all 0.3s;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .cover-feature:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.15);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        
+        .cover-feature i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        
+        .cover-feature h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cover-feature p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+        
+        .floating-element {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+            }
+            100% {
+                transform: translateY(-1000px) rotate(720deg);
+            }
+        }
+        
+        .scroll-down {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: blue;
+            font-size: 1.5rem;
+            animation: bounce 2s infinite;
+            cursor: pointer;
+            z-index: 1;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-20px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+        }
+        
+        /* Estilos para el sistema POS (se mostrarán después de hacer clic en la portada) */
+        .pos-system {
+            display: none;
+        }
+        
+        .navbar-custom {
+            background-color: var(--primary-color);
+        }
+        
+        .sidebar {
+            background-color: pink;
+            height: 100vh;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .product-card {
+            transition: all 0.3s;
+            cursor: pointer;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .category-btn {
+            transition: all 0.3s;
+        }
+        
+        .category-btn.active {
+            background-color: var(--secondary-color) !important;
+            color: green !important;
+        }
+        
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+        }
+        
+        .cart-item:hover {
+            background-color: #f9f9f9;
+        }
+        
+        .barcode-scanner {
+            position: relative;
+        }
+        
+        .barcode-scanner::after {
+            content: '\f02a';
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #7f8c8d;
+        }
+        
+        .product-img-container {
+            height: 120px;
+            background-color: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .product-img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
+        
+        .product-img-placeholder {
+            color: #6c757d;
+            font-size: 0.8rem;
+            text-align: center;
+            padding: 10px;
+        }
+        
+        @media (max-width: 992px) {
+            .sidebar {
+                height: auto;
+            }
+            
+            .cover-title {
+                font-size: 2.5rem;
+            }
+            
+            .cover-subtitle {
+                font-size: 1.2rem;
+                padding: 0 1rem;
+            }
+            
+            .cover-features {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Portada -->
+    <div class="cover-container" id="cover">
+        <div class="floating-elements">
+            <div class="floating-element" style="width: 100px; height: 100px; top: 20%; left: 10%; animation-duration: 20s; animation-delay: 0s;"></div>
+            <div class="floating-element" style="width: 150px; height: 150px; top: 70%; left: 80%; animation-duration: 25s; animation-delay: 5s;"></div>
+            <div class="floating-element" style="width: 80px; height: 80px; top: 40%; left: 60%; animation-duration: 18s; animation-delay: 2s;"></div>
+            <div class="floating-element" style="width: 120px; height: 120px; top: 60%; left: 30%; animation-duration: 22s; animation-delay: 7s;"></div>
+        </div>
+        
+        <div class="cover-logo animate__animated animate__fadeInDown">
+            <i class="fas fa-cash-register"></i>
+        </div>
+        <h1 class="cover-title animate__animated animate__fadeInDown animate__delay-1s">SuperCaja POS</h1>
+        <p class="cover-subtitle animate__animated animate__fadeInDown animate__delay-2s">Sistema de punto de venta moderno y eficiente para gestionar tu negocio con facilidad y estilo</p>
+        <button class="btn btn-primary cover-btn animate__animated animate__fadeInUp animate__delay-3s" id="enter-btn">
+            <i class="fas fa-sign-in-alt me-2"></i>Ingresar al Sistema
+        </button>
+        
+        <div class="cover-features">
+            <div class="cover-feature animate__animated animate__fadeIn animate__delay-1s">
+                <i class="fas fa-bolt"></i>
+                <h3>Rápido</h3>
+                <p>Operaciones ágiles para atender más clientes</p>
+            </div>
+            <div class="cover-feature animate__animated animate__fadeIn animate__delay-2s">
+                <i class="fas fa-chart-line"></i>
+                <h3>Eficiente</h3>
+                <p>Gestión de inventario en tiempo real</p>
+            </div>
+            <div class="cover-feature animate__animated animate__fadeIn animate__delay-3s">
+                <i class="fas fa-mobile-alt"></i>
+                <h3>Moderno</h3>
+                <p>Diseño responsive para cualquier dispositivo</p>
+            </div>
+        </div>
+        
+        <div class="scroll-down animate__animated animate__fadeIn animate__delay-4s">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+    
+    <!-- Sistema POS (oculto inicialmente) -->
+    <div class="pos-system" id="pos-system">
+        <!-- Barra de navegación -->
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <i class="fas fa-cash-register me-2"></i>SuperCaja
+                </a>
+                <div class="d-flex align-items-center">
+                    <span class="text-white me-3">Cajero: <strong>Usuario</strong></span>
+                    <button class="btn btn-sm btn-outline-light" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row">
+                <!-- Sidebar del carrito -->
+                <div class="col-lg-4 col-md-5 p-0">
+                    <div id="cart-view" class="sidebar p-3">
+                        <!-- Vista del carrito se cargará aquí dinámicamente -->
+                    </div>
+                </div>
+                
+                <!-- Área principal de productos -->
+                <div class="col-lg-8 col-md-7 py-3">
+                    <div id="products-view">
+                        <!-- Vista de productos se cargará aquí dinámicamente -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de cobro -->
+        <div class="modal fade" id="checkoutModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title">Terminar Venta</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Método de Pago</label>
+                            <div class="btn-group w-100" role="group">
+                                <input type="radio" class="btn-check" name="payment-method" id="cash" autocomplete="off" checked>
+                                <label class="btn btn-outline-primary" for="cash"><i class="fas fa-money-bill-wave me-2"></i>Efectivo</label>
+                                
+                                <input type="radio" class="btn-check" name="payment-method" id="card" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="card"><i class="fas fa-credit-card me-2"></i>Tarjeta</label>
+                                
+                                <input type="radio" class="btn-check" name="payment-method" id="transfer" autocomplete="off">
+                                <label class="btn btn-outline-primary" for="transfer"><i class="fas fa-mobile-alt me-2"></i>Transferencia</label>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3" id="cash-section">
+                            <label for="amount-received" class="form-label">Efectivo Recibido</label>
+                            <input type="number" step="0.01" class="form-control form-control-lg" id="amount-received">
+                            <div class="mt-2 fs-5">
+                                <strong>Cambio: </strong><span id="change-amount">$0.00</span>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="customer-name" class="form-label">Cliente (opcional)</label>
+                            <input type="text" class="form-control" id="customer-name" placeholder="Nombre del cliente">
+                        </div>
+                        
+                        <div class="form-check form-switch mb-3">
+                            <input class="form-check-input" type="checkbox" id="print-receipt" checked>
+                            <label class="form-check-label" for="print-receipt">Imprimir ticket</label>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="confirm-sale-btn">
+                            <i class="fas fa-check-circle me-2"></i>Confirmar Venta
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de cantidad -->
+        <div class="modal fade" id="quantityModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cantidad</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center mb-3">
+                            <div class="product-img-container">
+                                <img id="product-selected-image" class="product-img" src="" alt="Producto" onerror="this.style.display='none'; document.getElementById('product-img-placeholder').style.display='block';">
+                                <div id="product-img-placeholder" class="product-img-placeholder">Imagen no disponible</div>
+                            </div>
+                        </div>
+                        <h5 id="product-selected-name" class="mb-3"></h5>
+                        <p>Precio unitario: <strong id="product-selected-price"></strong></p>
+                        <p>Disponible: <strong id="product-stock-available"></strong></p>
+                        
+                        <div class="mb-3">
+                            <label for="product-quantity" class="form-label">Cantidad a vender</label>
+                            <input type="number" id="product-quantity" class="form-control form-control-lg" min="1" value="1">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="add-to-cart-btn">Agregar al Carrito</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Modal de ticket -->
+        <div class="modal fade" id="receiptModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Ticket de Venta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center mb-3">
+                            <h4>SUPERMERCADO EJEMPLO</h4>
+                            <p>Dirección: Av. Principal 123</p>
+                            <p>Tel: 555-123-4567</p>
+                            <p id="receipt-date"></p>
+                            <hr>
+                        </div>
+                        
+                        <div id="receipt-content">
+                            <!-- Contenido del ticket se generará aquí -->
+                        </div>
+                        
+                        <hr>
+                        <div class="text-center">
+                            <p>¡Gracias por su compra!</p>
+                            <p>Vuelva pronto</p>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        <button type="button" class="btn btn-primary" id="print-receipt-btn">
+                            <i class="fas fa-print me-2"></i>Imprimir
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS y dependencias -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Componentes/Vistas -->
+    <script id="cart-view-template" type="text/template">
+        <h3 class="text-center mb-4"><i class="fas fa-shopping-cart me-2"></i>Venta Actual</h3>
+        
+        <!-- Entrada de código de barras -->
+        <div class="input-group mb-3 barcode-scanner">
+            <input type="text" class="form-control form-control-lg" id="barcode-input" placeholder="Escanear código de barras" autofocus>
+            <button class="btn btn-primary" type="button" id="barcode-btn">
+                <i class="fas fa-barcode"></i>
+            </button>
+        </div>
+        
+        <!-- Lista de productos en el carrito -->
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th width="80">Cant.</th>
+                        <th width="100">Subtotal</th>
+                        <th width="40"></th>
+                    </tr>
+                </thead>
+                <tbody id="cart-items">
+                    <!-- Productos del carrito aparecerán aquí -->
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">No hay productos en el carrito</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Resumen de la venta -->
+        <div class="card border-0 shadow-sm mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Resumen de Venta</h5>
+                <table class="table table-borderless">
+                    <tr class="table-active">
+                        <th>Total:</th>
+                        <th class="text-end" id="total">$0.00</th>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="d-grid gap-2">
+            <button class="btn btn-success btn-lg py-3" id="checkout-btn" disabled>
+                <i class="fas fa-credit-card me-2"></i>COBRAR VENTA
+            </button>
+            <div class="btn-group">
+                <button class="btn btn-outline-danger" id="clear-cart-btn">
+                    <i class="fas fa-trash-alt me-2"></i>Cancelar
+                </button>
+                <button class="btn btn-outline-secondary" id="hold-sale-btn">
+                    <i class="fas fa-pause me-2"></i>Pausar
+                </button>
+                <button class="btn btn-outline-primary" id="discount-btn">
+                    <i class="fas fa-tag me-2"></i>Descuento
+                </button>
+            </div>
+        </div>
+    </script>
+
+    <script id="products-view-template" type="text/template">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-store me-2"></i>Productos Disponibles</h2>
+            <div class="d-flex">
+                <div class="input-group" style="width: 250px;">
+                    <input type="text" class="form-control" id="search-product" placeholder="Buscar producto...">
+                    <button class="btn btn-outline-secondary" type="button">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Categorías -->
+        <div class="mb-4">
+            <div class="btn-group flex-wrap" role="group" id="category-filters">
+                <button type="button" class="btn btn-outline-secondary active" data-category="all">Todos</button>
+                <button type="button" class="btn btn-outline-secondary" data-category="Alimentos">Alimentos</button>
+                <button type="button" class="btn btn-outline-secondary" data-category="Bebidas">Bebidas</button>
+                <button type="button" class="btn btn-outline-secondary" data-category="Limpieza">Limpieza</button>
+                <button type="button" class="btn btn-outline-secondary" data-category="Golosinas">Golosinas</button>
+                <button type="button" class="btn btn-outline-secondary" data-category="Farmacia">Farmacia</button>
+                <button type="button" class="btn btn-outline-secondary" data-category="Electrónicos">Electrónicos</button>
+                <button type="button" class="btn btn-outline-secondary" data-category="Panadería">Panadería</button>
+            </div>
+        </div>
+        
+        <!-- Lista de productos -->
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-3" id="products-container">
+            <!-- Los productos se cargarán aquí -->
+        </div>
+    </script>
+
+    <script>
+        // Datos de productos para un centro comercial (ampliada)
+        const products = [
+            // Alimentos
+            { id: 1, name: "Arroz (1kg)", price: 1.50, stock: 50, category: "Alimentos", barcode: "100000000001", image: "https://d11h484hxd26eg.cloudfront.net/organizations/35/7411400802669_1.jpg" },
+            { id: 2, name: "Frijol (1kg)", price: 2.00, stock: 40, category: "Alimentos", barcode: "100000000002", image: "https://d11h484hxd26eg.cloudfront.net/organizations/35/7411400800467_1.jpg" },
+            { id: 3, name: "Aceite vegetal (3000ml)", price: 2.50, stock: 30, category: "Alimentos", barcode: "100000000003", image: "https://walmartsv.vtexassets.com/arquivos/ids/518741/50842_01.jpg?v=638611681449730000" },
+            { id: 4, name: "Azúcar (1kg)", price: 3.00, stock: 60, category: "Alimentos", barcode: "100000000004", image: "https://walmartsv.vtexassets.com/arquivos/ids/454577/Azucar-Blanca-Del-Canal-Bolsa-2500G-1-8338.jpg?v=638520969695900000" },
+            { id: 5, name: "Harina de trigo (1kg)", price: 2.50, stock: 45, category: "Alimentos", barcode: "100000000005", image: "https://nomen.es/wp-content/uploads/2023/05/harinas-trigo.jpg" },
+            { id: 6, name: "Sal (400g)", price: 0.80, stock: 70, category: "Alimentos", barcode: "100000000006", image: "https://walmartsv.vtexassets.com/arquivos/ids/470154/42575_01.jpg?v=638549700852000000" },
+            { id: 7, name: "Pasta (200g)", price: 1.20, stock: 55, category: "Alimentos", barcode: "100000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/576147/47517_01.jpg?v=638655648087400000" },
+            { id: 8, name: "Atún en lata", price: 1.80, stock: 40, category: "Alimentos", barcode: "100000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/711113/84392_01.jpg?v=638787144047000000" },
+            { id: 9, name: "Leche en polvo (400g)", price: 3.50, stock: 35, category: "Alimentos", barcode: "100000000009", image: "https://walmartsv.vtexassets.com/arquivos/ids/608678/55026_01.jpg?v=638676625556000000" },
+            { id: 10, name: "Cereal (500g)", price: 4.00, stock: 25, category: "Alimentos", barcode: "100000000010", image: "https://walmartsv.vtexassets.com/arquivos/ids/738398/59118_01.jpg?v=638833104075230000" },
+            { id: 11, name: "Harina para repostería (600g)", price: 1.50, stock: 50, category: "Alimentos", barcode: "100000000011", image: "https://www.pastasgallo.es/wp-content/uploads/2020/12/pack_harina_reposteria.png" },
+            { id: 12, name: "Azúcar glass (600g)", price: 3.50, stock: 25, category: "Alimentos", barcode: "100000000012", image: "https://www.superaki.mx/cdn/shop/products/7501464317022_280921_4adb183e-f2fa-4a76-8924-d69ea15f708b.png?v=1633467985" },
+            { id: 13, name: "Chocolate para fundir (300g)", price: 5.00, stock: 40, category: "Alimentos", barcode: "100000000013", image: "https://www.hersheyland.mx/content/dam/Hersheyland_Mexico/es_mx/products/reposteria/hersheys-chocolate-semiamargo-para-fundir-800-g-/hsy-chocolate-semiamargo%20para-fundir-800-g-front.webp" },
+            { id: 14, name: "Levadura en polvo (100g)", price: 2.00, stock: 35, category: "Alimentos", barcode: "100000000014", image: "https://comeztier.com/wp-content/uploads/2017/04/levadura-en-polvo.jpg" },
+            { id: 15, name: "Esencia de vainilla (100g)", price: 3.50, stock: 20, category: "Alimentos", barcode: "100000000015", image: "https://www.supermaxi.com/wp-content/uploads/2024/08/7861009360655-1-1.jpg" },
+            { id: 16, name: "Colorante comestible (100g)", price: 3.00, stock: 80, category: "Alimentos", barcode: "100000000016", image: "https://walmarthn.vtexassets.com/arquivos/ids/481436/15917_01.jpg?v=638623921647270000" },
+            { id: 17, name: "Mantequilla sin sal (100g)", price: 3.50, stock: 20, category: "Alimentos", barcode: "100000000017", image: "https://www.yogurtyes.com/web/image/product.template/217/image" }, 
+            
+            // Bebidas
+            { id: 18, name: "Agua mineral (600ml)", price: 0.50, stock: 100, category: "Bebidas", barcode: "200000000001", image: "https://fenix.kip.sv/wp-content/uploads/products/163328-1.png" },
+            { id: 19, name: "coca-cola (2L)", price: 5.00, stock: 80, category: "Bebidas", barcode: "200000000002", image: "https://lh3.googleusercontent.com/s04w2qGzdo9M3vWyKqK9vsjHG7O0MHaiQpOGIFpht1TLzCjx7m6oT8ZVXX1H1HCrz_i1-qGq4J7gmSS7NQvBfzpHu6au3w19BDyd-o8FckIEMVpQ" },
+            { id: 20, name: "Jugo de naranja (1L)", price: 4.00, stock: 50, category: "Bebidas", barcode: "200000000003", image: "https://www.supermaxi.com/wp-content/uploads/2024/08/7861042574248-1-1.jpg" },
+            { id: 21, name: "Leche (1L)", price: 7.00, stock: 60, category: "Bebidas", barcode: "200000000004", image: "https://walmartsv.vtexassets.com/arquivos/ids/404530/Leche-Fresca-Salud-Entera-Carton-900Ml-3-14876.jpg?v=638423887692270000" },
+            { id: 22, name: "Café (250g)", price: 6.00, stock: 40, category: "Bebidas", barcode: "200000000005", image: "https://api.aunclic.com.co/storage/variation/images/small/FDQUXDUBWM_20201016132504.png" },
+            { id: 23, name: "cafe OLE)", price: 3.50, stock: 45, category: "Bebidas", barcode: "200000000006", image: "https://walmartsv.vtexassets.com/arquivos/ids/581649/53274_02.jpg?v=638660385711700000" },
+            { id: 24, name: "Energizante (250ml)", price: 2.50, stock: 60, category: "Bebidas", barcode: "200000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/415190/Bebida-Monster-Energizante-Lata-473ml-2-317.jpg?v=638444937669070000" },
+            { id: 25, name: "Cerveza (pack)", price: 2.00, stock: 120, category: "Bebidas", barcode: "200000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/385760/Cerveza-Pilsener-en-Lata-24-Pack-355ml-1-3636.jpg?v=638416647808070000" },
+            { id: 26, name: "Vino tinto (750ml)", price: 12.00, stock: 30, category: "Bebidas", barcode: "200000000009", image: "https://walmartsv.vtexassets.com/arquivos/ids/294845/Vino-Tinto-Santa-Helena-Caber-Sauv-750Ml-3-6705.jpg?v=638104630093900000" },
+            { id: 27, name: "Whisky (750ml)", price: 25.00, stock: 20, category: "Bebidas", barcode: "200000000010", image: "https://drinkit.com.sv/wp-content/uploads/2019/12/jwblack-label-1000ml-op.jpg" },
+            
+            // Limpieza
+            { id: 28, name: "Jabón de baño", price: 5.00, stock: 70, category: "Limpieza", barcode: "300000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/527707/73182_01.jpg?v=638615881058070000" },
+            { id: 29, name: "Detergente (500g)", price: 8.00, stock: 40, category: "Limpieza", barcode: "300000000002", image: "https://walmartsv.vtexassets.com/arquivos/ids/581175/83192_02.jpg?v=638659934097900000" },
+            { id: 30, name: "Cloro (1L)", price: 10.00, stock: 35, category: "Limpieza", barcode: "300000000003", image: "https://walmartsv.vtexassets.com/arquivos/ids/742573/43547_02.jpg?v=638839770074200000" },
+            { id: 31, name: "Escoba", price: 2.00, stock: 20, category: "Limpieza", barcode: "300000000004", image: "https://www.toysrus.es/medias/?context=bWFzdGVyfHByb2R1Y3RfaW1hZ2VzfDEwMTc4fGltYWdlL2pwZWd8YUdJeUwyaGtNUzh4TXpBeU9EVXpNRGt4TXpNeE1BfGY1MDk1MTk3ZjZkNzE4N2I0ZmYyMmFlNjY3OWRkN2QxMjFhMGRjNDA4ODcxNjVkNzlhZjk3NmJiNDgzOTMwYzI" },
+            { id: 32, name: "Trapo de piso", price: 1.50, stock: 45, category: "Limpieza", barcode: "300000000005", image: "https://prodelimptienda.com.ar/wp-content/uploads/2020/07/GRIS_Mesa-de-trabajo-1.png" },
+            { id: 33, name: "Desinfectante (1L)", price: 6.00, stock: 30, category: "Limpieza", barcode: "300000000006", image: "https://walmartsv.vtexassets.com/arquivos/ids/484792/40543_01.jpg?v=638572048846400000" },
+            { id: 34, name: "Esponjas (3un)", price: 2.50, stock: 50, category: "Limpieza", barcode: "300000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/300195/Esponja-Limpieza-Pesada-Anat-mica-Scotch-Brite-X-3-Und-2-1594.jpg?v=638157226759000000" },
+            { id: 35, name: "Papel higiénico (4rollos)", price: 3.50, stock: 65, category: "Limpieza", barcode: "300000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/363431/Papel-Higienico-Supermax-1P-1000H-16R-5-10774.jpg?v=638366639043570000" },
+            { id: 36, name: "Toallas de papel (2un)", price: 4.00, stock: 40, category: "Limpieza", barcode: "300000000009", image: "https://walmartsv.vtexassets.com/arquivos/ids/749905/63441_02.jpg?v=638851290172700000" },
+            { id: 37, name: "Bolsa de basura (10un)", price: 5.00, stock: 35, category: "Limpieza", barcode: "300000000010", image: "https://walmartsv.vtexassets.com/arquivos/ids/597482/46216_01.jpg?v=638666129509630000" },
+            
+            // Golosinas
+            { id: 38, name: "bombones ", price: 1.00, stock: 45, category: "Golosinas", barcode: "400000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/270126/Bombones-Vensus-Twis-Mix-Xxl-48gr-1-25361.jpg?v=638006792056530000" },
+            { id: 39, name: "malvaviscos (70g)", price: 0.60, stock: 80, category: "Golosinas", barcode: "400000000002", image: "https://acdn-us.mitiendanube.com/stores/516/580/products/005056511-ead0746e378ad98c5016668027079595-1024-1024.jpg" },
+            { id: 40, name: "Galletas (150g)", price: 0.25, stock: 65, category: "Golosinas", barcode: "400000000003", image: "https://www.oreo-la.com/assets/site/images/products/types/p_original.png?v=ok" },
+            { id: 41, name: "Chocolate (100g)", price: 1.50, stock: 50, category: "Golosinas", barcode: "400000000004", image: "https://walmartgt.vtexassets.com/arquivos/ids/186585/Conito-Best-Fresa-85G-1-14812.jpg?v=637614632192970000" },
+            { id: 42, name: "Caramelos (100g)", price: 0.80, stock: 70, category: "Golosinas", barcode: "400000000005", image: "https://m.media-amazon.com/images/I/41rWc0XT31L.jpg" },
+            { id: 43, name: "Palomitas (100g)", price: 1.20, stock: 40, category: "Golosinas", barcode: "400000000006", image: "https://bitworks-multimedia.superselectos.com/api/selectos/multimedia/2818bcef-f7d2-451d-a3eb-d5daf6da75c8/content" },
+            { id: 44, name: "Frutos secos (200g)", price: 3.50, stock: 30, category: "Golosinas", barcode: "400000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/384291/Mezcla-Cashitas-De-Nueces-Mixtas-150gr-1-11849.jpg?v=638416542875900000" },
+            { id: 45, name: "Chips (150g)", price: 1.80, stock: 55, category: "Golosinas", barcode: "400000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/498893/49672_01.jpg?v=638592949433470000" },
+            { id: 46, name: "Barra energética", price: 2.00, stock: 45, category: "Golosinas", barcode: "400000000009", image: "https://victoryendurance.com/wp-content/uploads/2020/06/barritas-energeticas-chocolate-principal.jpg" },
+            { id: 47, name: "Goma de mascar", price: 0.50, stock: 100, category: "Golosinas", barcode: "400000000010", image: "https://walmartsv.vtexassets.com/arquivos/ids/709581/55429_01.jpg?v=638786196139970000" },
+            
+            // Farmacia
+            { id: 48, name: "Analgésico (10 tabletas)", price: 3.50, stock: 40, category: "Farmacia", barcode: "500000000001", image: "https://images.ctfassets.net/ir0g9r0fng0m/3WQEUVXN8c4De0BmMxLJfd/d1359afd0ffc7c35c2897367a2231ee8/tylenol-caja-con-frasco-20-tabletas-980-x-980-px-2-es-mx" },
+            { id: 49, name: "Antigripal (10 sobres)", price: 5.00, stock: 35, category: "Farmacia", barcode: "500000000002", image: "https://walmartsv.vtexassets.com/arquivos/ids/666368/77078_01.jpg?v=638736000773400000" },
+            { id: 50, name: "Alcohol etilico (250ml)", price: 2.00, stock: 50, category: "Farmacia", barcode: "500000000003", image: "https://dcamelot.com/cdn/shop/files/248019348_3211657595733309_2374267516280578780_n.png?v=1738104359" },
+            { id: 51, name: "Curitas (20un)", price: 3.00, stock: 45, category: "Farmacia", barcode: "500000000004", image: "https://media.falabella.com/tottusPE/42945286_1/w=1500,h=1500,fit=pad" },
+            { id: 52, name: "Jabón antibacterial", price: 4.00, stock: 40, category: "Farmacia", barcode: "500000000005", image: "https://www.escudoantibacterial.com/data/global/img/Jabon_LiquidoEscudoAntibacterial_Blanco.jpg" },
+            { id: 53, name: "Agua oxigenada (1l)", price: 6.00, stock: 35, category: "Farmacia", barcode: "500000000006", image: "https://ascmedic.com/wp-content/uploads/2021/11/agua-oxigenada.webp" },
+            { id: 54, name: "gasa esteril", price: 3.50, stock: 50, category: "Farmacia", barcode: "500000000007", image: "https://static.salcobrandonline.cl/spree/products/1401/large_webp/8730277.webp?1641482640" },
+            { id: 55, name: "algodon", price: 2.50, stock: 60, category: "Farmacia", barcode: "500000000008", image: "https://walmartcr.vtexassets.com/arquivos/ids/527946/Algodon-Zumm-Absorbente-Bolsa-150Unid-1-31037.jpg?v=638419242355930000" },
+            { id: 56, name: "Agujas hipodermicas", price: 4.50, stock: 45, category: "Farmacia", barcode: "500000000009", image: "https://www.ibor.net/modules/ph_simpleblog/covers/74.jpg" },
+            { id: 57, name: "Vitamina C (30 tabletas)", price: 8.00, stock: 30, category: "Farmacia", barcode: "500000000010", image: "https://www.redoxon.com.mx/sites/g/files/vrxlpx49771/files/2023-12/PS_sashet.png" },
+            
+            // Electrónicos
+            { id: 58, name: "Pilas AA (4un)", price: 5.00, stock: 30, category: "Electrónicos", barcode: "600000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/382752/Bater-a-Duracell-Alcalina-AA-Basico-4unidades-2-7105.jpg?v=638416534840630000" },
+            { id: 59, name: "Cargador USB", price: 10.00, stock: 25, category: "Electrónicos", barcode: "600000000002", image: "https://images.philips.com/is/image/philipsconsumer/93c17ab508e94406aa44b0cf007a46bc?$pnglarge$&wid=1250" },
+            { id: 60, name: "Audífonos", price: 80.00, stock: 20, category: "Electrónicos", barcode: "600000000003", image: "https://www.steren.com.sv/media/catalog/product/cache/0236bbabe616ddcff749ccbc14f38bf2/image/21867108a/audifonos-bluetooth-con-cancelacion-de-ruido-negros.jpg" },
+            { id: 61, name: "Memoria USB 32GB", price: 11.00, stock: 15, category: "Electrónicos", barcode: "600000000004", image: "https://acosa.com.sv/wp-content/uploads/2024/10/HS-USB-M200S-128G-U3.webp" },
+            { id: 62, name: "computadora", price: 200.00, stock: 10, category: "Electrónicos", barcode: "600000000005", image: "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/esupport/esupport-pages/desktop-connected-to-monitor.png" },
+            { id: 63, name: "Teclado", price: 55.00, stock: 8, category: "Electrónicos", barcode: "600000000006", image: "https://www.officedepot.com.sv/medias/37455.jpg-1200ftw?context=bWFzdGVyfHJvb3R8MjIyMTQ2fGltYWdlL2pwZWd8YURNM0wyaGxNaTh4TVRrek1qZzJPVEkyTXpNNU1DOHpOelExTlM1cWNHZGZNVEl3TUdaMGR3fDM4ZDZhZTJjOWU0YmU1OTM1ZWJjZmY4M2ZjNzEyYzQ0NmU5NTgwY2UxNTJkMGVjOWQ4NjlkYTIwZWNmOWFkZmI" },
+            { id: 64, name: "Adaptador HDMI", price: 10.00, stock: 12, category: "Electrónicos", barcode: "600000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/352149/Adaptador-Xtech-Hdm-M-Modelo-Xtc333-1-34570.jpg?v=638328299927170000" },
+            { id: 65, name: "Cable USB-C", price: 7.00, stock: 18, category: "Electrónicos", barcode: "600000000008", image: "https://siman.vtexassets.com/arquivos/ids/329839/101483347.jpg?v=637250645791930000" },
+            { id: 66, name: "Funda para celular", price: 12.00, stock: 22, category: "Electrónicos", barcode: "600000000009", image: "https://mandalacases.com/cdn/shop/articles/tipos-de-forros-para-celulares.jpg?v=1640698813" },
+            { id: 67, name: "Iphone 13", price: 1000.00, stock: 30, category: "Electrónicos", barcode: "600000000010", image: "https://i5.walmartimages.com/seo/Apple-iPhone-13-Mini-A2481-256GB-White-US-Model-Factory-Unlocked-Cell-Phone-Excellent-Condition_b1bb3127-72b2-4342-a872-95ad51b8a5bd.780a651cca5b1c97ac1aa85a239a174c.jpeg" },
+            
+            // Panadería (nueva categoría)
+            { id: 68, name: "Pan blanco", price: 1.50, stock: 30, category: "Panadería", barcode: "700000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/592061/46253_01.jpg?v=638665091665370000" },
+            { id: 69, name: "Pan integral", price: 2.00, stock: 25, category: "Panadería", barcode: "700000000002", image: "https://d11h484hxd26eg.cloudfront.net/organizations/35/pannad_1024.png" },
+            { id: 70, name: "Pan de ajo", price: 2.50, stock: 20, category: "Panadería", barcode: "700000000003", image: "https://walmartsv.vtexassets.com/arquivos/ids/554012/81963_01.jpg?v=638636772170570000" },
+            { id: 71, name: "Donas", price: 1.00, stock: 40, category: "Panadería", barcode: "700000000004", image: "https://www.tutrebol.es/105901/donuts-mini-glace-donuts-pack-5-un.jpg" },
+            { id: 72, name: "torta de chocolagte", price: 18.25, stock: 30, category: "Panadería", barcode: "700000000005", image: "https://cdn0.recetasgratis.net/es/posts/1/9/6/torta_de_chocolate_esponjosa_10691_600.jpg" },
+            { id: 73, name: "Conchas", price: 1.75, stock: 50, category: "Panadería", barcode: "700000000006", image: "https://cheforopeza.com.mx/wp-content/uploads/2022/02/concha.jpg" },
+            { id: 74, name: "Bolillo", price: 1.50, stock: 60, category: "Panadería", barcode: "700000000007", image: "https://www.superaki.mx/cdn/shop/files/0000000006296_041124_3a502464-6032-4031-a077-f743c956d391.webp?v=1730815023" },
+            { id: 75, name: "Teleras", price: 0.60, stock: 55, category: "Panadería", barcode: "700000000008", image: "https://blog.elamasadero.com/wp-content/uploads/teleras.jpg" },
+            { id: 76, name: "Pan de muerto", price: 1.50, stock: 20, category: "Panadería", barcode: "700000000009", image: "https://www.aceitesdeolivadeespana.com/wp-content/uploads/2016/06/pan_de_muerto.jpg" },
+            { id: 77, name: "Rosca de reyes", price: 3.00, stock: 15, category: "Panadería", barcode: "700000000010", image: "https://familiakitchen.com/wp-content/uploads/2021/12/iStock-1356847735-rosca-de-reyes-3.jpg" }
+        ];
+        
+        let cart = [];
+        let currentProduct = null;
+        
+        // Inicializar la aplicación
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configurar eventos de la portada
+            document.getElementById('enter-btn').addEventListener('click', function() {
+                // Ocultar portada con animación
+                document.getElementById('cover').classList.add('animate__animated', 'animate__fadeOut');
+                
+                // Mostrar sistema POS después de la animación
+                setTimeout(function() {
+                    document.getElementById('cover').style.display = 'none';
+                    document.getElementById('pos-system').style.display = 'block';
+                    
+                    // Cargar vistas
+                    loadViews();
+                    
+                    // Renderizar productos iniciales
+                    renderProducts();
+                    setupEventListeners();
+                    
+                    // Enfocar el input de código de barras al cargar
+                    document.getElementById('barcode-input').focus();
+                }, 500);
+            });
+            
+            // Configurar botón de logout para volver a la portada
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                // Ocultar sistema POS con animación
+                document.getElementById('pos-system').classList.add('animate__animated', 'animate__fadeOut');
+                
+                // Mostrar portada después de la animación
+                setTimeout(function() {
+                    document.getElementById('pos-system').style.display = 'none';
+                    document.getElementById('cover').style.display = 'flex';
+                    document.getElementById('cover').classList.remove('animate__fadeOut');
+                    document.getElementById('cover').classList.add('animate__fadeIn');
+                    
+                    // Limpiar carrito si es necesario
+                    cart = [];
+                }, 500);
+            });
+            
+            // Configurar scroll down en la portada
+            document.querySelector('.scroll-down').addEventListener('click', function() {
+                window.scrollBy({
+                    top: window.innerHeight - 100,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Cargar vistas desde templates
+        function loadViews() {
+            const cartViewTemplate = document.getElementById('cart-view-template').innerHTML;
+            const productsViewTemplate = document.getElementById('products-view-template').innerHTML;
+            
+            document.getElementById('cart-view').innerHTML = cartViewTemplate;
+            document.getElementById('products-view').innerHTML = productsViewTemplate;
+        }
+        
+        // Renderizar productos
+        function renderProducts(filter = '', category = 'all') {
+            const container = document.getElementById('products-container');
+            container.innerHTML = '';
+            
+            let filteredProducts = products;
+            
+            // Aplicar filtro de búsqueda
+            if (filter) {
+                filteredProducts = filteredProducts.filter(p => 
+                    p.name.toLowerCase().includes(filter.toLowerCase()) ||
+                    (p.barcode && p.barcode.includes(filter))
+                );
+            }
+            
+            // Aplicar filtro de categoría
+            if (category !== 'all') {
+                filteredProducts = filteredProducts.filter(p => p.category === category);
+            }
+            
+            if (filteredProducts.length === 0) {
+                container.innerHTML = '<div class="col-12 text-center py-5"><h5>No se encontraron productos</h5></div>';
+                return;
+            }
+            
+            filteredProducts.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'col';
+                productCard.innerHTML = `
+                    <div class="card product-card h-100" data-id="${product.id}">
+                        <div class="product-img-container">
+                            ${product.image ? 
+                                `<img src="${product.image}" class="product-img" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">` : 
+                                ''
+                            }
+                            <div class="product-img-placeholder" style="${product.image ? 'display:none;' : ''}">Imagen no disponible</div>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="mb-2">
+                                <span class="badge bg-secondary">${product.category}</span>
+                            </div>
+                            <h5 class="card-title">${product.name}</h5>
+                            <p class="card-text text-success fw-bold">$${product.price.toFixed(2)}</p>
+                            <small class="text-muted">Disponible: ${product.stock}</small>
+                            ${product.barcode ? `<small class="d-block text-muted">Código: ${product.barcode}</small>` : ''}
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pb-3">
+                            <button class="btn btn-primary w-100 add-to-cart-btn" data-id="${product.id}">
+                                <i class="fas fa-cart-plus me-2"></i>Agregar
+                            </button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(productCard);
+            });
+        }
+        
+        // Renderizar carrito
+        function renderCart() {
+            const cartContainer = document.getElementById('cart-items');
+            
+            if (cart.length === 0) {
+                cartContainer.innerHTML = `
+                    <tr>
+                        <td colspan="4" class="text-center text-muted py-3">No hay productos en el carrito</td>
+                    </tr>
+                `;
+                document.getElementById('checkout-btn').disabled = true;
+                updateTotals();
+                return;
+            }
+            
+            cartContainer.innerHTML = '';
+            cart.forEach(item => {
+                const cartItem = document.createElement('tr');
+                cartItem.className = 'cart-item';
+                cartItem.innerHTML = `
+                    <td>${item.name}</td>
+                    <td>
+                        <div class="input-group input-group-sm">
+                            <button class="btn btn-outline-secondary minus-btn" data-id="${item.id}">-</button>
+                            <input type="number" class="form-control text-center quantity-input" value="${item.quantity}" min="1" max="${item.stock + item.quantity}" data-id="${item.id}">
+                            <button class="btn btn-outline-secondary plus-btn" data-id="${item.id}">+</button>
+                        </div>
+                    </td>
+                    <td class="text-end">$${(item.price * item.quantity).toFixed(2)}</td>
+                    <td class="text-end">
+                        <button class="btn btn-sm btn-outline-danger remove-item-btn" data-id="${item.id}">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </td>
+                `;
+                cartContainer.appendChild(cartItem);
+            });
+            
+            document.getElementById('checkout-btn').disabled = false;
+            updateTotals();
+            
+            // Configurar eventos para los controles de cantidad
+            setupQuantityControls();
+        }
+        
+        // Configurar controles de cantidad en el carrito
+        function setupQuantityControls() {
+            document.querySelectorAll('.quantity-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    const productId = parseInt(this.dataset.id);
+                    const newQuantity = parseInt(this.value);
+                    
+                    if (newQuantity > 0) {
+                        updateCartItemQuantity(productId, newQuantity);
+                    } else {
+                        this.value = 1;
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.minus-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = parseInt(this.dataset.id);
+                    const input = this.nextElementSibling;
+                    const newQuantity = parseInt(input.value) - 1;
+                    
+                    if (newQuantity > 0) {
+                        input.value = newQuantity;
+                        updateCartItemQuantity(productId, newQuantity);
+                    }
+                });
+            });
+            
+            document.querySelectorAll('.plus-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const productId = parseInt(this.dataset.id);
+                    const input = this.previousElementSibling;
+                    const newQuantity = parseInt(input.value) + 1;
+                    
+                    input.value = newQuantity;
+                    updateCartItemQuantity(productId, newQuantity);
+                });
+            });
+        }
+        
+        // Actualizar cantidad de un producto en el carrito
+        function updateCartItemQuantity(productId, newQuantity) {
+            const cartItem = cart.find(item => item.id === productId);
+            const product = products.find(p => p.id === productId);
+            
+            if (cartItem && product) {
+                const quantityDifference = newQuantity - cartItem.quantity;
+                
+                if (product.stock >= quantityDifference) {
+                    cartItem.quantity = newQuantity;
+                    product.stock -= quantityDifference;
+                    
+                    renderCart();
+                    renderProducts();
+                } else {
+                    alert('No hay suficiente stock disponible');
+                    // Restaurar valor anterior
+                    const input = document.querySelector(`.quantity-input[data-id="${productId}"]`);
+                    if (input) input.value = cartItem.quantity;
+                }
+            }
+        }
+        
+        // Actualizar totales
+        function updateTotals() {
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+            
+            // Actualizar cambio si el modal está abierto
+            if (document.getElementById('amount-received').value) {
+                calculateChange();
+            }
+        }
+        
+        // Configurar event listeners
+        function setupEventListeners() {
+            // Buscar producto
+            document.getElementById('search-product').addEventListener('input', function(e) {
+                const activeCategory = document.querySelector('#category-filters .active').dataset.category;
+                renderProducts(e.target.value, activeCategory);
+            });
+            
+            // Filtrar por categoría
+            document.getElementById('category-filters').addEventListener('click', function(e) {
+                if (e.target.tagName === 'BUTTON' && e.target.dataset.category) {
+                    // Actualizar botones activos
+                    document.querySelectorAll('#category-filters .btn').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    e.target.classList.add('active');
+                    
+                    // Filtrar productos
+                    const searchValue = document.getElementById('search-product').value;
+                    renderProducts(searchValue, e.target.dataset.category);
+                }
+            });
+            
+            // Agregar producto al carrito (abrir modal de cantidad)
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('add-to-cart-btn') || e.target.closest('.add-to-cart-btn')) {
+                    const btn = e.target.classList.contains('add-to-cart-btn') ? 
+                        e.target : e.target.closest('.add-to-cart-btn');
+                    const productId = parseInt(btn.dataset.id);
+                    currentProduct = products.find(p => p.id === productId);
+                    
+                    if (currentProduct) {
+                        document.getElementById('product-selected-name').textContent = currentProduct.name;
+                        document.getElementById('product-selected-price').textContent = `$${currentProduct.price.toFixed(2)}`;
+                        document.getElementById('product-stock-available').textContent = currentProduct.stock;
+                        document.getElementById('product-quantity').max = currentProduct.stock;
+                        document.getElementById('product-quantity').value = 1;
+                        
+                        // Mostrar imagen del producto en el modal
+                        const productImg = document.getElementById('product-selected-image');
+                        const placeholder = document.getElementById('product-img-placeholder');
+                        
+                        if (currentProduct.image) {
+                            productImg.src = currentProduct.image;
+                            productImg.style.display = 'block';
+                            placeholder.style.display = 'none';
+                        } else {
+                            productImg.style.display = 'none';
+                            placeholder.style.display = 'block';
+                        }
+                        
+                        const modal = new bootstrap.Modal(document.getElementById('quantityModal'));
+                        modal.show();
+                    }
+                }
+                
+                // Eliminar producto del carrito
+                if (e.target.classList.contains('remove-item-btn') || e.target.closest('.remove-item-btn')) {
+                    const btn = e.target.classList.contains('remove-item-btn') ? 
+                        e.target : e.target.closest('.remove-item-btn');
+                    const productId = parseInt(btn.dataset.id);
+                    
+                    removeFromCart(productId);
+                }
+            });
+            
+            // Confirmar agregar al carrito
+            document.getElementById('add-to-cart-btn').addEventListener('click', function() {
+                const quantity = parseInt(document.getElementById('product-quantity').value);
+                
+                if (quantity > 0 && quantity <= currentProduct.stock) {
+                    addToCart(currentProduct, quantity);
+                    
+                    // Cerrar modal
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('quantityModal'));
+                    modal.hide();
+                    
+                    // Enfocar el input de código de barras
+                    document.getElementById('barcode-input').focus();
+                } else {
+                    alert('La cantidad no es válida');
+                }
+            });
+            
+            // Vaciar carrito
+            document.getElementById('clear-cart-btn').addEventListener('click', function() {
+                if (cart.length === 0) return;
+                
+                if (confirm('¿Estás seguro de cancelar esta venta? Se perderán todos los productos agregados.')) {
+                    // Devolver todos los productos al stock
+                    cart.forEach(item => {
+                        const product = products.find(p => p.id === item.id);
+                        if (product) {
+                            product.stock += item.quantity;
+                        }
+                    });
+                    
+                    cart = [];
+                    renderCart();
+                    renderProducts();
+                    
+                    // Enfocar el input de código de barras
+                    document.getElementById('barcode-input').focus();
+                }
+            });
+            
+            // Abrir modal de cobro
+            document.getElementById('checkout-btn').addEventListener('click', function() {
+                const modal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+                modal.show();
+                
+                // Resetear valores
+                document.getElementById('amount-received').value = '';
+                document.getElementById('change-amount').textContent = '$0.00';
+                document.getElementById('customer-name').value = '';
+                
+                // Enfocar el input de efectivo
+                document.getElementById('amount-received').focus();
+            });
+            
+            // Escanear código de barras
+            document.getElementById('barcode-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const barcode = this.value.trim();
+                    if (barcode) {
+                        scanBarcode(barcode);
+                        this.value = '';
+                    }
+                }
+            });
+            
+            document.getElementById('barcode-btn').addEventListener('click', function() {
+                const barcode = document.getElementById('barcode-input').value.trim();
+                if (barcode) {
+                    scanBarcode(barcode);
+                    document.getElementById('barcode-input').value = '';
+                }
+            });
+            
+            // Calcular cambio
+            document.getElementById('amount-received').addEventListener('input', calculateChange);
+            
+            // Cambiar visibilidad de sección de efectivo
+            document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    document.getElementById('cash-section').style.display = 
+                        this.id === 'cash' ? 'block' : 'none';
+                });
+            });
+            
+            // Confirmar venta
+            document.getElementById('confirm-sale-btn').addEventListener('click', function() {
+                const paymentMethod = document.querySelector('input[name="payment-method"]:checked').id;
+                const amountReceived = paymentMethod === 'cash' ? 
+                    parseFloat(document.getElementById('amount-received').value) || 0 : 0;
+                const total = parseFloat(document.getElementById('total').textContent.replace('$', ''));
+                
+                if (paymentMethod === 'cash' && amountReceived < total) {
+                    alert('El efectivo recibido es menor que el total');
+                    return;
+                }
+                
+                // Generar ticket
+                generateReceipt(paymentMethod, amountReceived);
+                
+                // Limpiar carrito y cerrar modal
+                cart = [];
+                renderCart();
+                
+                const modal = bootstrap.Modal.getInstance(document.getElementById('checkoutModal'));
+                modal.hide();
+                
+                // Enfocar el input de código de barras
+                document.getElementById('barcode-input').focus();
+            });
+            
+            // Imprimir ticket
+            document.getElementById('print-receipt-btn').addEventListener('click', function() {
+                window.print(); // En un entorno real, aquí iría la lógica de impresión
+            });
+        }
+        
+        // Agregar producto al carrito
+        function addToCart(product, quantity) {
+            // Verificar si ya está en el carrito
+            const existingItem = cart.find(item => item.id === product.id);
+            
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: quantity,
+                    stock: product.stock // Guardamos el stock original para referencia
+                });
+            }
+            
+            // Actualizar stock
+            product.stock -= quantity;
+            
+            // Renderizar cambios
+            renderCart();
+            renderProducts();
+        }
+        
+        // Eliminar producto del carrito
+        function removeFromCart(productId) {
+            // Encontrar el producto en el carrito
+            const cartItemIndex = cart.findIndex(item => item.id === productId);
+            if (cartItemIndex !== -1) {
+                const cartItem = cart[cartItemIndex];
+                
+                // Devolver el stock
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    product.stock += cartItem.quantity;
+                }
+                
+                // Eliminar del carrito
+                cart.splice(cartItemIndex, 1);
+                renderCart();
+                renderProducts();
+                
+                // Enfocar el input de código de barras
+                document.getElementById('barcode-input').focus();
+            }
+        }
+        
+        // Escanear código de barras
+        function scanBarcode(barcode) {
+            const product = products.find(p => p.barcode === barcode);
+            
+            if (product) {
+                if (product.stock > 0) {
+                    currentProduct = product;
+                    
+                    // Mostrar imagen del producto en el modal
+                    const productImg = document.getElementById('product-selected-image');
+                    const placeholder = document.getElementById('product-img-placeholder');
+                    
+                    if (product.image) {
+                        productImg.src = product.image;
+                        productImg.style.display = 'block';
+                        placeholder.style.display = 'none';
+                    } else {
+                        productImg.style.display = 'none';
+                        placeholder.style.display = 'block';
+                    }
+                    
+                    // Si solo hay 1 en stock, agregar directamente
+                    if (product.stock === 1) {
+                        addToCart(product, 1);
+                    } else {
+                        // Mostrar modal para cantidad
+                        document.getElementById('product-selected-name').textContent = product.name;
+                        document.getElementById('product-selected-price').textContent = `$${product.price.toFixed(2)}`;
+                        document.getElementById('product-stock-available').textContent = product.stock;
+                        document.getElementById('product-quantity').max = product.stock;
+                        document.getElementById('product-quantity').value = 1;
+                        
+                        const modal = new bootstrap.Modal(document.getElementById('quantityModal'));
+                        modal.show();
+                    }
+                } else {
+                    alert('Producto agotado');
+                }
+            } else {
+                alert('Producto no encontrado');
+            }
+        }
+        
+        // Calcular cambio
+        function calculateChange() {
+            const amountReceived = parseFloat(document.getElementById('amount-received').value) || 0;
+            const total = parseFloat(document.getElementById('total').textContent.replace('$', ''));
+            const change = amountReceived - total;
+            
+            document.getElementById('change-amount').textContent = `$${change.toFixed(2)}`;
+        }
+        
+        // Generar ticket
+        function generateReceipt(paymentMethod, amountReceived) {
+            const total = parseFloat(document.getElementById('total').textContent.replace('$', ''));
+            const customerName = document.getElementById('customer-name').value || 'Cliente no identificado';
+            const printReceipt = document.getElementById('print-receipt').checked;
+            
+            // Formatear método de pago
+            let paymentMethodText = '';
+            switch(paymentMethod) {
+                case 'cash':
+                    paymentMethodText = `Efectivo: $${amountReceived.toFixed(2)}\nCambio: $${(amountReceived - total).toFixed(2)}`;
+                    break;
+                case 'card':
+                    paymentMethodText = 'Tarjeta de crédito/débito';
+                    break;
+                case 'transfer':
+                    paymentMethodText = 'Transferencia electrónica';
+                    break;
+            }
+            
+            // Generar contenido del ticket
+            const receiptContent = document.getElementById('receipt-content');
+            receiptContent.innerHTML = '';
+            
+            // Fecha y hora
+            const now = new Date();
+            document.getElementById('receipt-date').textContent = now.toLocaleString();
+            
+            // Productos
+            const productsList = document.createElement('div');
+            productsList.className = 'mb-3';
+            
+            cart.forEach(item => {
+                const productRow = document.createElement('div');
+                productRow.className = 'd-flex justify-content-between';
+                productRow.innerHTML = `
+                    <span>${item.name} x${item.quantity}</span>
+                    <span>$${(item.price * item.quantity).toFixed(2)}</span>
+                `;
+                productsList.appendChild(productRow);
+            });
+            
+            receiptContent.appendChild(productsList);
+            
+            // Totales
+            const totalsDiv = document.createElement('div');
+            totalsDiv.className = 'mb-3';
+            totalsDiv.innerHTML = `
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total:</span>
+                    <span>$${total.toFixed(2)}</span>
+                </div>
+                <hr>
+                <div class="d-flex justify-content-between">
+                    <span>Método de pago:</span>
+                    <span>${paymentMethod === 'cash' ? 'Efectivo' : paymentMethod === 'card' ? 'Tarjeta' : 'Transferencia'}</span>
+                </div>
+                ${paymentMethod === 'cash' ? `
+                <div class="d-flex justify-content-between">
+                    <span>Recibido:</span>
+                    <span>$${amountReceived.toFixed(2)}</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span>Cambio:</span>
+                    <span>$${(amountReceived - total).toFixed(2)}</span>
+                </div>
+                ` : ''}
+            `;
+            receiptContent.appendChild(totalsDiv);
+            
+            // Mostrar modal de ticket si se seleccionó imprimir
+            if (printReceipt) {
+                const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
+                receiptModal.show();
+            }
+        }
+    </script>
+</body>
+</html>
