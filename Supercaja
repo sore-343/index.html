@@ -12,10 +12,10 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     <style>
         :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #3498db;
-            --success-color: #27ae60;
-            --light-color: #f5f6fa;
+            --primary-color: #50c8b8;
+            --secondary-color: #34a2db;
+            --success-color: #ae275d;
+            --light-color: #e4e6eb;
         }
         
         body {
@@ -24,15 +24,71 @@
             overflow-x: hidden;
         }
         
+        /* Estilos para el login */
+        .login-container {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), #4fc3f7);
+        }
+        
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .login-body {
+            padding: 30px;
+        }
+        
+        .form-floating label {
+            color: #6c757d;
+        }
+        
+        .btn-login {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 10px;
+            font-weight: 600;
+        }
+        
+        .btn-login:hover {
+            background-color: #3fb8a8;
+        }
+        
+        /* Botón modo comprador */
+        #customer-mode-btn {
+            padding: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        #customer-mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
         /* Estilos para la portada */
         .cover-container {
             height: 100vh;
-            display: flex;
+            display: none;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(135deg, var(--primary-color), #1a252f);
-            color: silver;
+            background: linear-gradient(135deg, var(--primary-color), #4fc3f7);
+            color: black;
             text-align: center;
             position: relative;
             overflow: hidden;
@@ -188,7 +244,7 @@
             }
         }
         
-        /* Estilos para el sistema POS (se mostrarán después de hacer clic en la portada) */
+        /* Estilos para el sistema POS */
         .pos-system {
             display: none;
         }
@@ -199,7 +255,7 @@
         
         .sidebar {
             background-color: pink;
-            height: 100vh;
+            height: 30vh;
             box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
         
@@ -221,7 +277,7 @@
         
         .category-btn.active {
             background-color: var(--secondary-color) !important;
-            color: green !important;
+            color: pink !important;
         }
         
         .cart-item {
@@ -230,7 +286,7 @@
         }
         
         .cart-item:hover {
-            background-color: #f9f9f9;
+            background-color: #121212;
         }
         
         .barcode-scanner {
@@ -245,7 +301,7 @@
             right: 10px;
             top: 50%;
             transform: translateY(-50%);
-            color: #7f8c8d;
+            color: #a38f6a;
         }
         
         .product-img-container {
@@ -265,10 +321,18 @@
         }
         
         .product-img-placeholder {
-            color: #6c757d;
+            color: #dc3545;
             font-size: 0.8rem;
             text-align: center;
             padding: 10px;
+        }
+        
+        /* Estilos para funciones de admin */
+        .admin-features {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
         
         @media (max-width: 992px) {
@@ -294,6 +358,43 @@
     </style>
 </head>
 <body>
+    <!-- Login -->
+    <div class="login-container" id="login-container">
+        <div class="login-card animate__animated animate__fadeIn">
+            <div class="login-header">
+                <h3><i class="fas fa-cash-register me-2"></i> SuperCaja POS</h3>
+                <p class="mb-0">Selecciona tu modo de acceso</p>
+            </div>
+            <div class="login-body">
+                <!-- Formulario para Admin -->
+                <div class="mb-4">
+                    <h5 class="text-center mb-3"><i class="fas fa-user-shield me-2"></i>Acceso Admin</h5>
+                    <form id="admin-login-form">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="admin-username" placeholder="Usuario" required>
+                            <label for="admin-username"><i class="fas fa-user me-2"></i>Usuario Admin</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="admin-password" placeholder="Contraseña" required>
+                            <label for="admin-password"><i class="fas fa-lock me-2"></i>Contraseña</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fas fa-sign-in-alt me-2"></i>Ingresar como Admin
+                        </button>
+                    </form>
+                </div>
+                <hr>
+                <!-- Modo Comprador (sin login) -->
+                <div class="text-center">
+                    <h5 class="mb-3"><i class="fas fa-shopping-cart me-2"></i>Modo Comprador</h5>
+                    <button class="btn btn-success w-100" id="customer-mode-btn">
+                        <i class="fas fa-user me-2"></i>Entrar como Comprador
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <!-- Portada -->
     <div class="cover-container" id="cover">
         <div class="floating-elements">
@@ -344,7 +445,10 @@
                     <i class="fas fa-cash-register me-2"></i>SuperCaja
                 </a>
                 <div class="d-flex align-items-center">
-                    <span class="text-white me-3">Cajero: <strong>Usuario</strong></span>
+                    <span class="text-white me-3" id="user-role-display">
+                        <span id="current-user">Usuario</span>
+                        <small id="user-role-badge" class="badge bg-light text-dark ms-2"></small>
+                    </span>
                     <button class="btn btn-sm btn-outline-light" id="logout-btn">
                         <i class="fas fa-sign-out-alt"></i>
                     </button>
@@ -363,6 +467,22 @@
                 
                 <!-- Área principal de productos -->
                 <div class="col-lg-8 col-md-7 py-3">
+                    <!-- Funciones de admin (solo visible para administradores) -->
+                    <div id="admin-features" class="admin-features mb-3" style="display: none;">
+                        <h4><i class="fas fa-tools me-2"></i>Herramientas de Administración</h4>
+                        <div class="btn-group">
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-plus me-1"></i>Agregar Producto
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-edit me-1"></i>Editar Producto
+                            </button>
+                            <button class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-chart-bar me-1"></i>Reportes
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div id="products-view">
                         <!-- Vista de productos se cargará aquí dinámicamente -->
                     </div>
@@ -408,7 +528,7 @@
                         
                         <div class="form-check form-switch mb-3">
                             <input class="form-check-input" type="checkbox" id="print-receipt" checked>
-                            <label class="form-check-label" for="print-receipt">Imprimir ticket</label>
+                            <label class="form-check-label" for="print-receipt">Descargar ticket</label>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -464,8 +584,8 @@
                     <div class="modal-body">
                         <div class="text-center mb-3">
                             <h4>SUPERMERCADO EJEMPLO</h4>
-                            <p>Dirección: Av. Principal 123</p>
-                            <p>Tel: 555-123-4567</p>
+                            <p>Dirección: col. El Campo </p>
+                            <p>Tel: 503-7099-4910 </p>
                             <p id="receipt-date"></p>
                             <hr>
                         </div>
@@ -483,7 +603,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         <button type="button" class="btn btn-primary" id="print-receipt-btn">
-                            <i class="fas fa-print me-2"></i>Imprimir
+                            <i class="fas fa-print me-2"></i>Descargar
                         </button>
                     </div>
                 </div>
@@ -592,6 +712,13 @@
     </script>
 
     <script>
+        // Datos de usuarios (en un sistema real esto vendría de una base de datos)
+        const users = [
+            { username: "admin", password: "admin123", name: "Administrador", role: "admin" },
+            { username: "cajero1", password: "cajero123", name: "Juan Pérez", role: "cashier" },
+            { username: "cajero2", password: "cajero456", name: "María López", role: "cashier" }
+        ];
+        
         // Datos de productos para un centro comercial (ampliada)
         const products = [
             // Alimentos
@@ -611,8 +738,8 @@
             { id: 14, name: "Levadura en polvo (100g)", price: 2.00, stock: 35, category: "Alimentos", barcode: "100000000014", image: "https://comeztier.com/wp-content/uploads/2017/04/levadura-en-polvo.jpg" },
             { id: 15, name: "Esencia de vainilla (100g)", price: 3.50, stock: 20, category: "Alimentos", barcode: "100000000015", image: "https://www.supermaxi.com/wp-content/uploads/2024/08/7861009360655-1-1.jpg" },
             { id: 16, name: "Colorante comestible (100g)", price: 3.00, stock: 80, category: "Alimentos", barcode: "100000000016", image: "https://walmarthn.vtexassets.com/arquivos/ids/481436/15917_01.jpg?v=638623921647270000" },
-            { id: 17, name: "Mantequilla sin sal (100g)", price: 3.50, stock: 20, category: "Alimentos", barcode: "100000000017", image: "https://www.yogurtyes.com/web/image/product.template/217/image" }, 
-            
+            { id: 17, name: "Mantequilla sin sal (100g)", price: 3.50, stock: 20, category: "Alimentos", barcode: "100000000017", image: "https://www.yogurtyes.com/web/image/product.template/217/image" },
+           
             // Bebidas
             { id: 18, name: "Agua mineral (600ml)", price: 0.50, stock: 100, category: "Bebidas", barcode: "200000000001", image: "https://fenix.kip.sv/wp-content/uploads/products/163328-1.png" },
             { id: 19, name: "coca-cola (2L)", price: 5.00, stock: 80, category: "Bebidas", barcode: "200000000002", image: "https://lh3.googleusercontent.com/s04w2qGzdo9M3vWyKqK9vsjHG7O0MHaiQpOGIFpht1TLzCjx7m6oT8ZVXX1H1HCrz_i1-qGq4J7gmSS7NQvBfzpHu6au3w19BDyd-o8FckIEMVpQ" },
@@ -624,73 +751,99 @@
             { id: 25, name: "Cerveza (pack)", price: 2.00, stock: 120, category: "Bebidas", barcode: "200000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/385760/Cerveza-Pilsener-en-Lata-24-Pack-355ml-1-3636.jpg?v=638416647808070000" },
             { id: 26, name: "Vino tinto (750ml)", price: 12.00, stock: 30, category: "Bebidas", barcode: "200000000009", image: "https://walmartsv.vtexassets.com/arquivos/ids/294845/Vino-Tinto-Santa-Helena-Caber-Sauv-750Ml-3-6705.jpg?v=638104630093900000" },
             { id: 27, name: "Whisky (750ml)", price: 25.00, stock: 20, category: "Bebidas", barcode: "200000000010", image: "https://drinkit.com.sv/wp-content/uploads/2019/12/jwblack-label-1000ml-op.jpg" },
+            { id: 28, name: "yogur (bolsa)", price: 3.00, stock: 60, category: "Bebidas", barcode: "200000000011", image: "https://walmartsv.vtexassets.com/arquivos/ids/342569/Yogurt-Yescool-Liq-Bolsa-Manzana-6Pack-1-7544.jpg?v=638315451337530000" },
             
             // Limpieza
-            { id: 28, name: "Jabón de baño", price: 5.00, stock: 70, category: "Limpieza", barcode: "300000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/527707/73182_01.jpg?v=638615881058070000" },
-            { id: 29, name: "Detergente (500g)", price: 8.00, stock: 40, category: "Limpieza", barcode: "300000000002", image: "https://walmartsv.vtexassets.com/arquivos/ids/581175/83192_02.jpg?v=638659934097900000" },
-            { id: 30, name: "Cloro (1L)", price: 10.00, stock: 35, category: "Limpieza", barcode: "300000000003", image: "https://walmartsv.vtexassets.com/arquivos/ids/742573/43547_02.jpg?v=638839770074200000" },
-            { id: 31, name: "Escoba", price: 2.00, stock: 20, category: "Limpieza", barcode: "300000000004", image: "https://www.toysrus.es/medias/?context=bWFzdGVyfHByb2R1Y3RfaW1hZ2VzfDEwMTc4fGltYWdlL2pwZWd8YUdJeUwyaGtNUzh4TXpBeU9EVXpNRGt4TXpNeE1BfGY1MDk1MTk3ZjZkNzE4N2I0ZmYyMmFlNjY3OWRkN2QxMjFhMGRjNDA4ODcxNjVkNzlhZjk3NmJiNDgzOTMwYzI" },
-            { id: 32, name: "Trapo de piso", price: 1.50, stock: 45, category: "Limpieza", barcode: "300000000005", image: "https://prodelimptienda.com.ar/wp-content/uploads/2020/07/GRIS_Mesa-de-trabajo-1.png" },
-            { id: 33, name: "Desinfectante (1L)", price: 6.00, stock: 30, category: "Limpieza", barcode: "300000000006", image: "https://walmartsv.vtexassets.com/arquivos/ids/484792/40543_01.jpg?v=638572048846400000" },
-            { id: 34, name: "Esponjas (3un)", price: 2.50, stock: 50, category: "Limpieza", barcode: "300000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/300195/Esponja-Limpieza-Pesada-Anat-mica-Scotch-Brite-X-3-Und-2-1594.jpg?v=638157226759000000" },
-            { id: 35, name: "Papel higiénico (4rollos)", price: 3.50, stock: 65, category: "Limpieza", barcode: "300000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/363431/Papel-Higienico-Supermax-1P-1000H-16R-5-10774.jpg?v=638366639043570000" },
-            { id: 36, name: "Toallas de papel (2un)", price: 4.00, stock: 40, category: "Limpieza", barcode: "300000000009", image: "https://walmartsv.vtexassets.com/arquivos/ids/749905/63441_02.jpg?v=638851290172700000" },
-            { id: 37, name: "Bolsa de basura (10un)", price: 5.00, stock: 35, category: "Limpieza", barcode: "300000000010", image: "https://walmartsv.vtexassets.com/arquivos/ids/597482/46216_01.jpg?v=638666129509630000" },
+            { id: 29, name: "Jabón de baño", price: 5.00, stock: 70, category: "Limpieza", barcode: "300000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/527707/73182_01.jpg?v=638615881058070000" },
+            { id: 30, name: "Detergente (500g)", price: 8.00, stock: 40, category: "Limpieza", barcode: "300000000002", image: "https://walmartsv.vtexassets.com/arquivos/ids/581175/83192_02.jpg?v=638659934097900000" },
+            { id: 31, name: "Cloro (1L)", price: 10.00, stock: 35, category: "Limpieza", barcode: "300000000003", image: "https://walmartsv.vtexassets.com/arquivos/ids/742573/43547_02.jpg?v=638839770074200000" },
+            { id: 32, name: "Escoba", price: 2.00, stock: 20, category: "Limpieza", barcode: "300000000004", image: "https://www.toysrus.es/medias/?context=bWFzdGVyfHByb2R1Y3RfaW1hZ2VzfDEwMTc4fGltYWdlL2pwZWd8YUdJeUwyaGtNUzh4TXpBeU9EVXpNRGt4TXpNeE1BfGY1MDk1MTk3ZjZkNzE4N2I0ZmYyMmFlNjY3OWRkN2QxMjFhMGRjNDA4ODcxNjVkNzlhZjk3NmJiNDgzOTMwYzI" },
+            { id: 33, name: "Trapo de piso", price: 1.50, stock: 45, category: "Limpieza", barcode: "300000000005", image: "https://prodelimptienda.com.ar/wp-content/uploads/2020/07/GRIS_Mesa-de-trabajo-1.png" },
+            { id: 34, name: "Desinfectante (1L)", price: 6.00, stock: 30, category: "Limpieza", barcode: "300000000006", image: "https://walmartsv.vtexassets.com/arquivos/ids/484792/40543_01.jpg?v=638572048846400000" },
+            { id: 35, name: "Esponjas (3un)", price: 2.50, stock: 50, category: "Limpieza", barcode: "300000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/300195/Esponja-Limpieza-Pesada-Anat-mica-Scotch-Brite-X-3-Und-2-1594.jpg?v=638157226759000000" },
+            { id: 36, name: "Papel higiénico (4rollos)", price: 3.50, stock: 65, category: "Limpieza", barcode: "300000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/363431/Papel-Higienico-Supermax-1P-1000H-16R-5-10774.jpg?v=638366639043570000" },
+            { id: 37, name: "Toallas de papel (2un)", price: 4.00, stock: 40, category: "Limpieza", barcode: "300000000009", image: "https://walmartsv.vtexassets.com/arquivos/ids/768626/41725_01.jpg?v=638887023185230000" },
+            { id: 38, name: "Bolsa de basura (10un)", price: 5.00, stock: 35, category: "Limpieza", barcode: "300000000010", image: "https://walmartsv.vtexassets.com/arquivos/ids/597482/46216_01.jpg?v=638666129509630000" },
             
             // Golosinas
-            { id: 38, name: "bombones ", price: 1.00, stock: 45, category: "Golosinas", barcode: "400000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/270126/Bombones-Vensus-Twis-Mix-Xxl-48gr-1-25361.jpg?v=638006792056530000" },
-            { id: 39, name: "malvaviscos (70g)", price: 0.60, stock: 80, category: "Golosinas", barcode: "400000000002", image: "https://acdn-us.mitiendanube.com/stores/516/580/products/005056511-ead0746e378ad98c5016668027079595-1024-1024.jpg" },
-            { id: 40, name: "Galletas (150g)", price: 0.25, stock: 65, category: "Golosinas", barcode: "400000000003", image: "https://www.oreo-la.com/assets/site/images/products/types/p_original.png?v=ok" },
-            { id: 41, name: "Chocolate (100g)", price: 1.50, stock: 50, category: "Golosinas", barcode: "400000000004", image: "https://walmartgt.vtexassets.com/arquivos/ids/186585/Conito-Best-Fresa-85G-1-14812.jpg?v=637614632192970000" },
-            { id: 42, name: "Caramelos (100g)", price: 0.80, stock: 70, category: "Golosinas", barcode: "400000000005", image: "https://m.media-amazon.com/images/I/41rWc0XT31L.jpg" },
-            { id: 43, name: "Palomitas (100g)", price: 1.20, stock: 40, category: "Golosinas", barcode: "400000000006", image: "https://bitworks-multimedia.superselectos.com/api/selectos/multimedia/2818bcef-f7d2-451d-a3eb-d5daf6da75c8/content" },
-            { id: 44, name: "Frutos secos (200g)", price: 3.50, stock: 30, category: "Golosinas", barcode: "400000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/384291/Mezcla-Cashitas-De-Nueces-Mixtas-150gr-1-11849.jpg?v=638416542875900000" },
-            { id: 45, name: "Chips (150g)", price: 1.80, stock: 55, category: "Golosinas", barcode: "400000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/498893/49672_01.jpg?v=638592949433470000" },
-            { id: 46, name: "Barra energética", price: 2.00, stock: 45, category: "Golosinas", barcode: "400000000009", image: "https://victoryendurance.com/wp-content/uploads/2020/06/barritas-energeticas-chocolate-principal.jpg" },
-            { id: 47, name: "Goma de mascar", price: 0.50, stock: 100, category: "Golosinas", barcode: "400000000010", image: "https://walmartsv.vtexassets.com/arquivos/ids/709581/55429_01.jpg?v=638786196139970000" },
+            { id: 39, name: "bombones ", price: 1.00, stock: 45, category: "Golosinas", barcode: "400000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/270126/Bombones-Vensus-Twis-Mix-Xxl-48gr-1-25361.jpg?v=638006792056530000" },
+            { id: 40, name: "malvaviscos (70g)", price: 0.60, stock: 80, category: "Golosinas", barcode: "400000000002", image: "https://acdn-us.mitiendanube.com/stores/516/580/products/005056511-ead0746e378ad98c5016668027079595-1024-1024.jpg" },
+            { id: 41, name: "Galletas (150g)", price: 0.25, stock: 65, category: "Golosinas", barcode: "400000000003", image: "https://www.oreo-la.com/assets/site/images/products/types/p_original.png?v=ok" },
+            { id: 42, name: "Chocolate (100g)", price: 1.50, stock: 50, category: "Golosinas", barcode: "400000000004", image: "https://walmartgt.vtexassets.com/arquivos/ids/186585/Conito-Best-Fresa-85G-1-14812.jpg?v=637614632192970000" },
+            { id: 43, name: "Caramelos (100g)", price: 0.80, stock: 70, category: "Golosinas", barcode: "400000000005", image: "https://m.media-amazon.com/images/I/41rWc0XT31L.jpg" },
+            { id: 44, name: "Palomitas (100g)", price: 1.20, stock: 40, category: "Golosinas", barcode: "400000000006", image: "https://bitworks-multimedia.superselectos.com/api/selectos/multimedia/2818bcef-f7d2-451d-a3eb-d5daf6da75c8/content" },
+            { id: 45, name: "Frutos secos (200g)", price: 3.50, stock: 30, category: "Golosinas", barcode: "400000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/384291/Mezcla-Cashitas-De-Nueces-Mixtas-150gr-1-11849.jpg?v=638416542875900000" },
+            { id: 46, name: "Chips (150g)", price: 1.80, stock: 55, category: "Golosinas", barcode: "400000000008", image: "https://walmartsv.vtexassets.com/arquivos/ids/498893/49672_01.jpg?v=638592949433470000" },
+            { id: 47, name: "Barra energética", price: 2.00, stock: 45, category: "Golosinas", barcode: "400000000009", image: "https://victoryendurance.com/wp-content/uploads/2020/06/barritas-energeticas-chocolate-principal.jpg" },
+            { id: 48, name: "Goma de mascar", price: 0.50, stock: 100, category: "Golosinas", barcode: "400000000010", image: "https://walmartsv.vtexassets.com/arquivos/ids/709581/55429_01.jpg?v=638786196139970000" },
             
             // Farmacia
-            { id: 48, name: "Analgésico (10 tabletas)", price: 3.50, stock: 40, category: "Farmacia", barcode: "500000000001", image: "https://images.ctfassets.net/ir0g9r0fng0m/3WQEUVXN8c4De0BmMxLJfd/d1359afd0ffc7c35c2897367a2231ee8/tylenol-caja-con-frasco-20-tabletas-980-x-980-px-2-es-mx" },
-            { id: 49, name: "Antigripal (10 sobres)", price: 5.00, stock: 35, category: "Farmacia", barcode: "500000000002", image: "https://walmartsv.vtexassets.com/arquivos/ids/666368/77078_01.jpg?v=638736000773400000" },
-            { id: 50, name: "Alcohol etilico (250ml)", price: 2.00, stock: 50, category: "Farmacia", barcode: "500000000003", image: "https://dcamelot.com/cdn/shop/files/248019348_3211657595733309_2374267516280578780_n.png?v=1738104359" },
-            { id: 51, name: "Curitas (20un)", price: 3.00, stock: 45, category: "Farmacia", barcode: "500000000004", image: "https://media.falabella.com/tottusPE/42945286_1/w=1500,h=1500,fit=pad" },
-            { id: 52, name: "Jabón antibacterial", price: 4.00, stock: 40, category: "Farmacia", barcode: "500000000005", image: "https://www.escudoantibacterial.com/data/global/img/Jabon_LiquidoEscudoAntibacterial_Blanco.jpg" },
-            { id: 53, name: "Agua oxigenada (1l)", price: 6.00, stock: 35, category: "Farmacia", barcode: "500000000006", image: "https://ascmedic.com/wp-content/uploads/2021/11/agua-oxigenada.webp" },
-            { id: 54, name: "gasa esteril", price: 3.50, stock: 50, category: "Farmacia", barcode: "500000000007", image: "https://static.salcobrandonline.cl/spree/products/1401/large_webp/8730277.webp?1641482640" },
-            { id: 55, name: "algodon", price: 2.50, stock: 60, category: "Farmacia", barcode: "500000000008", image: "https://walmartcr.vtexassets.com/arquivos/ids/527946/Algodon-Zumm-Absorbente-Bolsa-150Unid-1-31037.jpg?v=638419242355930000" },
-            { id: 56, name: "Agujas hipodermicas", price: 4.50, stock: 45, category: "Farmacia", barcode: "500000000009", image: "https://www.ibor.net/modules/ph_simpleblog/covers/74.jpg" },
-            { id: 57, name: "Vitamina C (30 tabletas)", price: 8.00, stock: 30, category: "Farmacia", barcode: "500000000010", image: "https://www.redoxon.com.mx/sites/g/files/vrxlpx49771/files/2023-12/PS_sashet.png" },
+            { id: 49, name: "Analgésico (10 tabletas)", price: 3.50, stock: 40, category: "Farmacia", barcode: "500000000001", image: "https://images.ctfassets.net/ir0g9r0fng0m/3WQEUVXN8c4De0BmMxLJfd/d1359afd0ffc7c35c2897367a2231ee8/tylenol-caja-con-frasco-20-tabletas-980-x-980-px-2-es-mx" },
+            { id: 50, name: "Antigripal (10 sobres)", price: 5.00, stock: 35, category: "Farmacia", barcode: "500000000002", image: "https://walmartsv.vtexassets.com/arquivos/ids/666368/77078_01.jpg?v=638736000773400000" },
+            { id: 51, name: "Alcohol etilico (250ml)", price: 2.00, stock: 50, category: "Farmacia", barcode: "500000000003", image: "https://dcamelot.com/cdn/shop/files/248019348_3211657595733309_2374267516280578780_n.png?v=1738104359" },
+            { id: 52, name: "Curitas (20un)", price: 3.00, stock: 45, category: "Farmacia", barcode: "500000000004", image: "https://media.falabella.com/tottusPE/42945286_1/w=1500,h=1500,fit=pad" },
+            { id: 53, name: "Jabón antibacterial", price: 4.00, stock: 40, category: "Farmacia", barcode: "500000000005", image: "https://www.escudoantibacterial.com/data/global/img/Jabon_LiquidoEscudoAntibacterial_Blanco.jpg" },
+            { id: 54, name: "Agua oxigenada (1l)", price: 6.00, stock: 35, category: "Farmacia", barcode: "500000000006", image: "https://ascmedic.com/wp-content/uploads/2021/11/agua-oxigenada.webp" },
+            { id: 55, name: "gasa esteril", price: 3.50, stock: 50, category: "Farmacia", barcode: "500000000007", image: "https://static.salcobrandonline.cl/spree/products/1401/large_webp/8730277.webp?1641482640" },
+            { id: 56, name: "algodon", price: 2.50, stock: 60, category: "Farmacia", barcode: "500000000008", image: "https://walmartcr.vtexassets.com/arquivos/ids/527946/Algodon-Zumm-Absorbente-Bolsa-150Unid-1-31037.jpg?v=638419242355930000" },
+            { id: 57, name: "Agujas hipodermicas", price: 4.50, stock: 45, category: "Farmacia", barcode: "500000000009", image: "https://www.ibor.net/modules/ph_simpleblog/covers/74.jpg" },
+            { id: 58, name: "Vitamina C (30 tabletas)", price: 8.00, stock: 30, category: "Farmacia", barcode: "500000000010", image: "https://www.redoxon.com.mx/sites/g/files/vrxlpx49771/files/2023-12/PS_sashet.png" },
             
             // Electrónicos
-            { id: 58, name: "Pilas AA (4un)", price: 5.00, stock: 30, category: "Electrónicos", barcode: "600000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/382752/Bater-a-Duracell-Alcalina-AA-Basico-4unidades-2-7105.jpg?v=638416534840630000" },
-            { id: 59, name: "Cargador USB", price: 10.00, stock: 25, category: "Electrónicos", barcode: "600000000002", image: "https://images.philips.com/is/image/philipsconsumer/93c17ab508e94406aa44b0cf007a46bc?$pnglarge$&wid=1250" },
-            { id: 60, name: "Audífonos", price: 80.00, stock: 20, category: "Electrónicos", barcode: "600000000003", image: "https://www.steren.com.sv/media/catalog/product/cache/0236bbabe616ddcff749ccbc14f38bf2/image/21867108a/audifonos-bluetooth-con-cancelacion-de-ruido-negros.jpg" },
-            { id: 61, name: "Memoria USB 32GB", price: 11.00, stock: 15, category: "Electrónicos", barcode: "600000000004", image: "https://acosa.com.sv/wp-content/uploads/2024/10/HS-USB-M200S-128G-U3.webp" },
-            { id: 62, name: "computadora", price: 200.00, stock: 10, category: "Electrónicos", barcode: "600000000005", image: "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/esupport/esupport-pages/desktop-connected-to-monitor.png" },
-            { id: 63, name: "Teclado", price: 55.00, stock: 8, category: "Electrónicos", barcode: "600000000006", image: "https://www.officedepot.com.sv/medias/37455.jpg-1200ftw?context=bWFzdGVyfHJvb3R8MjIyMTQ2fGltYWdlL2pwZWd8YURNM0wyaGxNaTh4TVRrek1qZzJPVEkyTXpNNU1DOHpOelExTlM1cWNHZGZNVEl3TUdaMGR3fDM4ZDZhZTJjOWU0YmU1OTM1ZWJjZmY4M2ZjNzEyYzQ0NmU5NTgwY2UxNTJkMGVjOWQ4NjlkYTIwZWNmOWFkZmI" },
-            { id: 64, name: "Adaptador HDMI", price: 10.00, stock: 12, category: "Electrónicos", barcode: "600000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/352149/Adaptador-Xtech-Hdm-M-Modelo-Xtc333-1-34570.jpg?v=638328299927170000" },
-            { id: 65, name: "Cable USB-C", price: 7.00, stock: 18, category: "Electrónicos", barcode: "600000000008", image: "https://siman.vtexassets.com/arquivos/ids/329839/101483347.jpg?v=637250645791930000" },
-            { id: 66, name: "Funda para celular", price: 12.00, stock: 22, category: "Electrónicos", barcode: "600000000009", image: "https://mandalacases.com/cdn/shop/articles/tipos-de-forros-para-celulares.jpg?v=1640698813" },
-            { id: 67, name: "Iphone 13", price: 1000.00, stock: 30, category: "Electrónicos", barcode: "600000000010", image: "https://i5.walmartimages.com/seo/Apple-iPhone-13-Mini-A2481-256GB-White-US-Model-Factory-Unlocked-Cell-Phone-Excellent-Condition_b1bb3127-72b2-4342-a872-95ad51b8a5bd.780a651cca5b1c97ac1aa85a239a174c.jpeg" },
+            { id: 59, name: "Pilas AA (4un)", price: 5.00, stock: 30, category: "Electrónicos", barcode: "600000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/382752/Bater-a-Duracell-Alcalina-AA-Basico-4unidades-2-7105.jpg?v=638416534840630000" },
+            { id: 60, name: "Cargador USB", price: 10.00, stock: 25, category: "Electrónicos", barcode: "600000000002", image: "https://images.philips.com/is/image/philipsconsumer/93c17ab508e94406aa44b0cf007a46bc?$pnglarge$&wid=1250" },
+            { id: 61, name: "Audífonos", price: 80.00, stock: 20, category: "Electrónicos", barcode: "600000000003", image: "https://www.steren.com.sv/media/catalog/product/cache/0236bbabe616ddcff749ccbc14f38bf2/image/21867108a/audifonos-bluetooth-con-cancelacion-de-ruido-negros.jpg" },
+            { id: 62, name: "Memoria USB 32GB", price: 11.00, stock: 15, category: "Electrónicos", barcode: "600000000004", image: "https://acosa.com.sv/wp-content/uploads/2024/10/HS-USB-M200S-128G-U3.webp" },
+            { id: 63, name: "computadora", price: 200.00, stock: 10, category: "Electrónicos", barcode: "600000000005", image: "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/esupport/esupport-pages/desktop-connected-to-monitor.png" },
+            { id: 64, name: "Teclado", price: 55.00, stock: 8, category: "Electrónicos", barcode: "600000000006", image: "https://www.officedepot.com.sv/medias/37455.jpg-1200ftw?context=bWFzdGVyfHJvb3R8MjIyMTQ2fGltYWdlL2pwZWd8YURNM0wyaGxNaTh4TVRrek1qZzJPVEkyTXpNNU1DOHpOelExTlM1cWNHZGZNVEl3TUdaMGR3fDM4ZDZhZTJjOWU0YmU1OTM1ZWJjZmY4M2ZjNzEyYzQ0NmU5NTgwY2UxNTJkMGVjOWQ4NjlkYTIwZWNmOWFkZmI" },
+            { id: 65, name: "Adaptador HDMI", price: 10.00, stock: 12, category: "Electrónicos", barcode: "600000000007", image: "https://walmartsv.vtexassets.com/arquivos/ids/352149/Adaptador-Xtech-Hdm-M-Modelo-Xtc333-1-34570.jpg?v=638328299927170000" },
+            { id: 66, name: "Cable USB-C", price: 7.00, stock: 18, category: "Electrónicos", barcode: "600000000008", image: "https://siman.vtexassets.com/arquivos/ids/329839/101483347.jpg?v=637250645791930000" },
+            { id: 67, name: "Funda para celular", price: 12.00, stock: 22, category: "Electrónicos", barcode: "600000000009", image: "https://mandalacases.com/cdn/shop/articles/tipos-de-forros-para-celulares.jpg?v=1640698813" },
+            { id: 68, name: "Iphone 13", price: 1000.00, stock: 30, category: "Electrónicos", barcode: "600000000010", image: "https://i5.walmartimages.com/seo/Apple-iPhone-13-Mini-A2481-256GB-White-US-Model-Factory-Unlocked-Cell-Phone-Excellent-Condition_b1bb3127-72b2-4342-a872-95ad51b8a5bd.780a651cca5b1c97ac1aa85a239a174c.jpeg" },
             
             // Panadería (nueva categoría)
-            { id: 68, name: "Pan blanco", price: 1.50, stock: 30, category: "Panadería", barcode: "700000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/592061/46253_01.jpg?v=638665091665370000" },
-            { id: 69, name: "Pan integral", price: 2.00, stock: 25, category: "Panadería", barcode: "700000000002", image: "https://d11h484hxd26eg.cloudfront.net/organizations/35/pannad_1024.png" },
-            { id: 70, name: "Pan de ajo", price: 2.50, stock: 20, category: "Panadería", barcode: "700000000003", image: "https://walmartsv.vtexassets.com/arquivos/ids/554012/81963_01.jpg?v=638636772170570000" },
-            { id: 71, name: "Donas", price: 1.00, stock: 40, category: "Panadería", barcode: "700000000004", image: "https://www.tutrebol.es/105901/donuts-mini-glace-donuts-pack-5-un.jpg" },
-            { id: 72, name: "torta de chocolagte", price: 18.25, stock: 30, category: "Panadería", barcode: "700000000005", image: "https://cdn0.recetasgratis.net/es/posts/1/9/6/torta_de_chocolate_esponjosa_10691_600.jpg" },
-            { id: 73, name: "Conchas", price: 1.75, stock: 50, category: "Panadería", barcode: "700000000006", image: "https://cheforopeza.com.mx/wp-content/uploads/2022/02/concha.jpg" },
-            { id: 74, name: "Bolillo", price: 1.50, stock: 60, category: "Panadería", barcode: "700000000007", image: "https://www.superaki.mx/cdn/shop/files/0000000006296_041124_3a502464-6032-4031-a077-f743c956d391.webp?v=1730815023" },
-            { id: 75, name: "Teleras", price: 0.60, stock: 55, category: "Panadería", barcode: "700000000008", image: "https://blog.elamasadero.com/wp-content/uploads/teleras.jpg" },
-            { id: 76, name: "Pan de muerto", price: 1.50, stock: 20, category: "Panadería", barcode: "700000000009", image: "https://www.aceitesdeolivadeespana.com/wp-content/uploads/2016/06/pan_de_muerto.jpg" },
-            { id: 77, name: "Rosca de reyes", price: 3.00, stock: 15, category: "Panadería", barcode: "700000000010", image: "https://familiakitchen.com/wp-content/uploads/2021/12/iStock-1356847735-rosca-de-reyes-3.jpg" }
+            { id: 69, name: "Pan blanco", price: 1.50, stock: 30, category: "Panadería", barcode: "700000000001", image: "https://walmartsv.vtexassets.com/arquivos/ids/592061/46253_01.jpg?v=638665091665370000" },
+            { id: 70, name: "Pan integral", price: 2.00, stock: 25, category: "Panadería", barcode: "700000000002", image: "https://d11h484hxd26eg.cloudfront.net/organizations/35/pannad_1024.png" },
+            { id: 71, name: "Pan de ajo", price: 2.50, stock: 20, category: "Panadería", barcode: "700000000003", image: "https://walmartsv.vtexassets.com/arquivos/ids/554012/81963_01.jpg?v=638636772170570000" },
+            { id: 72, name: "Donas", price: 1.00, stock: 40, category: "Panadería", barcode: "700000000004", image: "https://www.tutrebol.es/105901/donuts-mini-glace-donuts-pack-5-un.jpg" },
+            { id: 73, name: "torta de chocolagte", price: 18.25, stock: 30, category: "Panadería", barcode: "700000000005", image: "https://cdn0.recetasgratis.net/es/posts/1/9/6/torta_de_chocolate_esponjosa_10691_600.jpg" },
+            { id: 74, name: "Conchas", price: 1.75, stock: 50, category: "Panadería", barcode: "700000000006", image: "https://cheforopeza.com.mx/wp-content/uploads/2022/02/concha.jpg" },
+            { id: 75, name: "Bolillo", price: 1.50, stock: 60, category: "Panadería", barcode: "700000000007", image: "https://www.superaki.mx/cdn/shop/files/0000000006296_041124_3a502464-6032-4031-a077-f743c956d391.webp?v=1730815023" },
+            { id: 76, name: "Teleras", price: 0.60, stock: 55, category: "Panadería", barcode: "700000000008", image: "https://blog.elamasadero.com/wp-content/uploads/teleras.jpg" },
+            { id: 77, name: "Pan de muerto", price: 1.50, stock: 20, category: "Panadería", barcode: "700000000009", image: "https://www.aceitesdeolivadeespana.com/wp-content/uploads/2016/06/pan_de_muerto.jpg" },
+            { id: 78, name: "Rosca de reyes", price: 3.00, stock: 15, category: "Panadería", barcode: "700000000010", image: "https://familiakitchen.com/wp-content/uploads/2021/12/iStock-1356847735-rosca-de-reyes-3.jpg" }
         ];
         
         let cart = [];
         let currentProduct = null;
+        let currentUser = null;
         
         // Inicializar la aplicación
         document.addEventListener('DOMContentLoaded', function() {
+            // Configurar formulario de login para admin
+            document.getElementById('admin-login-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('admin-username').value;
+                const password = document.getElementById('admin-password').value;
+                
+                // Validar credenciales
+                const user = users.find(u => u.username === username && u.password === password);
+                
+                if (user) {
+                    currentUser = user;
+                    showPOSSystem();
+                } else {
+                    alert('Usuario o contraseña incorrectos');
+                }
+            });
+            
+            // Configurar modo comprador
+            document.getElementById('customer-mode-btn').addEventListener('click', function() {
+                currentUser = { name: "Cliente", role: "customer" };
+                showPOSSystem();
+            });
+            
             // Configurar eventos de la portada
             document.getElementById('enter-btn').addEventListener('click', function() {
                 // Ocultar portada con animación
@@ -700,6 +853,10 @@
                 setTimeout(function() {
                     document.getElementById('cover').style.display = 'none';
                     document.getElementById('pos-system').style.display = 'block';
+                    
+                    // Mostrar nombre de usuario
+                    document.getElementById('current-user').textContent = currentUser.name;
+                    updateUserRoleBadge();
                     
                     // Cargar vistas
                     loadViews();
@@ -713,20 +870,21 @@
                 }, 500);
             });
             
-            // Configurar botón de logout para volver a la portada
+            // Configurar botón de logout
             document.getElementById('logout-btn').addEventListener('click', function() {
                 // Ocultar sistema POS con animación
                 document.getElementById('pos-system').classList.add('animate__animated', 'animate__fadeOut');
                 
-                // Mostrar portada después de la animación
+                // Mostrar login después de la animación
                 setTimeout(function() {
                     document.getElementById('pos-system').style.display = 'none';
-                    document.getElementById('cover').style.display = 'flex';
-                    document.getElementById('cover').classList.remove('animate__fadeOut');
-                    document.getElementById('cover').classList.add('animate__fadeIn');
+                    document.getElementById('login-container').style.display = 'flex';
+                    document.getElementById('login-container').classList.remove('animate__fadeOut');
+                    document.getElementById('login-container').classList.add('animate__fadeIn');
                     
                     // Limpiar carrito si es necesario
                     cart = [];
+                    currentUser = null;
                 }, 500);
             });
             
@@ -738,6 +896,42 @@
                 });
             });
         });
+        
+        // Mostrar el sistema POS según el tipo de usuario
+        function showPOSSystem() {
+            // Ocultar login con animación
+            document.getElementById('login-container').classList.add('animate__animated', 'animate__fadeOut');
+            
+            // Mostrar portada después de la animación
+            setTimeout(function() {
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('cover').style.display = 'flex';
+                document.getElementById('cover').classList.remove('animate__fadeOut');
+                document.getElementById('cover').classList.add('animate__fadeIn');
+                
+                // Mostrar nombre de usuario en la portada
+                document.getElementById('current-user').textContent = currentUser.name;
+                updateUserRoleBadge();
+            }, 500);
+        }
+        
+        // Actualizar el badge del rol de usuario
+        function updateUserRoleBadge() {
+            const badge = document.getElementById('user-role-badge');
+            if (currentUser.role === "admin") {
+                badge.textContent = "Admin";
+                badge.className = "badge bg-danger ms-2";
+                document.getElementById('admin-features').style.display = 'block';
+            } else if (currentUser.role === "cashier") {
+                badge.textContent = "Cajero";
+                badge.className = "badge bg-warning text-dark ms-2";
+                document.getElementById('admin-features').style.display = 'none';
+            } else {
+                badge.textContent = "Comprador";
+                badge.className = "badge bg-success ms-2";
+                document.getElementById('admin-features').style.display = 'none';
+            }
+        }
         
         // Cargar vistas desde templates
         function loadViews() {
